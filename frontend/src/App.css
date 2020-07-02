@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 :root {
-  --primary-color: #ffc0c0;
+  --primary-color: #ff707080;
   --secondary-color: #FFF;
   --success-color: #adffbb;
   --hover-color: #ff7070;
@@ -32,6 +32,9 @@
   }
 }
 /* form */
+.form-wrapper {
+  display: none;
+}
 form>div:nth-last-child(1) {
   display: flex;
   flex-flow: wrap;
@@ -55,7 +58,7 @@ form>div:nth-last-child(1) {
     bottom: -2.3rem;
   }
 }
-form.form,
+.billform,
 .filters,
 /* rows */
 .row {

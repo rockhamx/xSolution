@@ -1,4 +1,4 @@
-import { Form, Action } from "../utils/types";
+import { Form, Action } from "../types";
 import { ChangeNewBill, TOGGLE_FORM_VISIBILITY } from "../actions";
 
 export default function billForm(state: Form, action: Action): Form {

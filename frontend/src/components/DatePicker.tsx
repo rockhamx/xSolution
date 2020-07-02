@@ -2,7 +2,6 @@ import React, { ReactEventHandler, useState, useRef } from "react";
 import { getDays } from "../utils";
 import { WEEK, MONTHS } from "../utils/CONSTANT";
 import { useEventListener } from "../hooks/useEventListener";
-import { CloseButton } from "../Experimental/CloseButton";
 
 interface Props {
   label?: string;
@@ -24,7 +23,7 @@ export default function DatePicker(props: Props) {
   const {
     label,
     placeholder,
-    required,
+    // required,
     spliter,
     pickerDate,
     value,

@@ -1,9 +1,10 @@
 import React, { ReactEventHandler } from "react";
 
-export interface SelectOption {
+export interface SelectOption<V = string | number> {
   name?: string | number;
-  value: string | number | undefined;
+  value: V;
 }
+
 interface Props {
   label?: string;
   allOption?: boolean;
@@ -12,6 +13,7 @@ interface Props {
   onChange: ReactEventHandler;
   options: SelectOption[];
 }
+
 export default function Select(props: Props) {
   const {
     label,

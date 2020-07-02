@@ -1,13 +1,11 @@
-import { Bill, Filter, Category } from "../utils/types";
+import { Bill, Filter, Category } from "../types";
 import { useState, useEffect } from "react";
 
-export interface Props {
-  bills: Bill[];
-  filter: Filter;
-  categories: Map<String, Category>;
-}
-export const useFilteredBill = (props: Props) => {
-  const { bills, categories, filter } = props;
+export default function useFilteredBill(
+  bills: Bill[],
+  categories: Map<String, Category>,
+  filter: Filter
+) {
   const [filteredBills, setfilteredBills] = useState(bills);
 
   useEffect(() => {
@@ -47,7 +45,7 @@ export const useFilteredBill = (props: Props) => {
         return true;
       })
     );
-  }, [bills, filter]);
+  }, [bills, filter, categories]);
 
   return filteredBills;
-};
+}

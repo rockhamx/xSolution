@@ -5,28 +5,28 @@ export const ChangeNewBill = {
   AMOUNT: "NEWBILL_AMOUNT",
 };
 
-export const changeNewBillTime = (time: string) => {
+export const changeFormTime = (time: string) => {
   return {
     type: ChangeNewBill.TIME,
     value: time,
   };
 };
 
-export const changeNewBillCategory = (category: string) => {
+export const changeFormCategory = (category: string) => {
   return {
     type: ChangeNewBill.CATEGORY,
     value: category,
   };
 };
 
-export const changeNewBillType = (type: string) => {
+export const changeFormType = (type: string) => {
   return {
     type: ChangeNewBill.TYPE,
     value: type,
   };
 };
 
-export const changeNewBillAmount = (amount: string) => {
+export const changeFormAmount = (amount: string) => {
   return {
     type: ChangeNewBill.AMOUNT,
     value: amount,

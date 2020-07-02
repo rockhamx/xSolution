@@ -1,4 +1,4 @@
-import { Filter, Form, Action } from "../utils/types";
+import { Filter, Form, Action } from "../types";
 import billFilter from "./billFilter";
 import billForm from "./billForm";
 

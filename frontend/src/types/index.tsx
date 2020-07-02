@@ -43,3 +43,8 @@ export interface Action {
   type: string;
   value: any;
 }
+// 账单收支类型选项
+export const billTypeOptions = [
+  { name: "支出", value: BillType.Cost },
+  { name: "收入", value: BillType.Earn },
+];

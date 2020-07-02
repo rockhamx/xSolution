@@ -1,99 +1,47 @@
-import React, { useReducer, useRef } from "react";
-import { Bill, BillType, Category } from "../utils/types";
-import DatePicker from "./DatePicker";
-import Select from "./Select";
+import React, { useContext } from "react";
+import { Bill, BillType, Category, Filter, Form } from "../types";
 import Filters from "./Filters";
-import { useBills } from "../hooks/useBills";
-import { useFilteredBill } from "../hooks/useFilteredBills";
-import { useSummary } from "../hooks/useSummary";
-import reducer from "../reducers";
 import {
   toggleFormVisibility,
-  changeNewBillTime,
-  changeNewBillCategory,
-  changeNewBillAmount,
-  changeNewBillType,
+  changeFormTime,
+  changeFormCategory,
 } from "../actions";
-import { postBill } from "../utils/server";
-import CanvasChart from "./CanvasChart";
-import { ChartType } from "chart.js";
+import { DispatchContext } from "./App";
+import BillForm from "./BillForm";
 
-const initialState = {
-  filter: {},
-  form: {
-    show: false,
-  },
-};
+interface Props {
+  bills: Bill[];
+  categories: Map<string, Category>;
+  filter: Filter;
+  form: Form;
+  setBills: React.Dispatch<React.SetStateAction<Bill[]>>;
+  counter: React.MutableRefObject<number>;
+}
 
-const billTypeOptions = [
-  { name: "支出", value: BillType.Cost },
-  { name: "收入", value: BillType.Earn },
-];
+export default function BillSheet(props: Props) {
+  const { bills, categories, filter, form, setBills, counter } = props;
+  const dispatch = useContext(DispatchContext);
 
-export default function BillSheet() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { bills, setBills, categories, billID } = useBills();
-  const filteredBills = useFilteredBill({
-    bills,
-    categories,
-    filter: state.filter,
-  });
-  const summary = useSummary({ bills: filteredBills });
-
-  let billCategoryOptions = Array.from(categories.keys()).map((id) => {
-    const name = categories.get(id)!.name;
-    return { name, value: id };
-  });
-
-  const onSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const { form } = state;
-    const time = form.time ? new Date(form.time) : new Date();
-    const id = ++billID.current;
-    const category = categories.get(
-      form.category || billCategoryOptions[0].value
-    ) as Category;
-    const type = parseInt(form.type || category.type);
-    const amount = form.amount || 0;
-
-    postBill({
-      time: time.getTime(),
-      category: form.category,
-      type,
-      amount,
-    });
-    const bill: Bill = { id, time, category: category.name, type, amount };
-    setBills([bill, ...bills]);
-
-    // 清空某些输入框
-    dispatch(changeNewBillAmount(""));
-  };
-
-  const onToggleFormVisibility = (e: React.MouseEvent<HTMLInputElement>) => {
+  let billCategoryOptions = Array.from(categories.entries()).map(
+    ([id, cat]) => {
+      return { name: cat.name, value: id };
+    }
+  );
+  /**
+   * 切换表单显示状态
+   */
+  const onToggleFormVisibility = () => {
     dispatch(toggleFormVisibility());
 
-    // 给表单的某些属性添加初始值
-    if (!state.form.time)
-      dispatch(changeNewBillTime(new Date().toLocaleDateString()));
+    // 给表单添加默认值
+    if (!form.time) dispatch(changeFormTime(new Date().toLocaleDateString()));
 
-    if (!state.form.category)
-      dispatch(changeNewBillCategory(billCategoryOptions[0].value));
+    if (!form.category)
+      dispatch(changeFormCategory(billCategoryOptions[0].value));
   };
-
-  const labels = Array.from(summary.byCategories.keys());
-  const data = Array.from(summary.byCategories.values());
 
   return (
     <div className="bill-sheet">
-      <CanvasChart
-        id="summary-chart"
-        title={`账单分类统计 - 总收入：￥${summary.income}，总支出：￥${summary.expenditure}`}
-        type={"pie"}
-        labels={labels}
-        data={data}
-      />
-
       <div className="options">
         <input
           type="button"
@@ -102,56 +50,20 @@ export default function BillSheet() {
           onClick={onToggleFormVisibility}
         />
       </div>
-
-      <Filters
-        filter={state.filter}
-        dispatch={dispatch}
+      {/* 过滤器 */}
+      <Filters filter={filter} billCategoryOptions={billCategoryOptions} />
+      {/* 表单 */}
+      <BillForm
+        form={form}
         billCategoryOptions={billCategoryOptions}
-        billTypeOptions={billTypeOptions}
+        categories={categories}
+        bills={bills}
+        setBills={setBills}
+        idCounter={counter}
+        onCancel={onToggleFormVisibility}
       />
-
-      {/* TODO: 想出抽象这个表单组件的解决方案 */}
-      {state.form.show && (
-        <form className="form" onSubmit={onSubmit}>
-          <DatePicker
-            value={state.form.time}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              dispatch(changeNewBillTime(e.target.value));
-            }}
-          />
-
-          <Select
-            options={billCategoryOptions}
-            value={state.form.category!}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              dispatch(changeNewBillCategory(e.target.value));
-              const type = categories.get(e.target.value)?.type;
-              type && dispatch(changeNewBillType(type));
-            }}
-          />
-
-          <div></div>
-          <div>
-            <input
-              required
-              type="number"
-              value={state.form.amount || ""}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                dispatch(changeNewBillAmount(e.target.value));
-              }}
-            />
-            <input className="btn-xs btn-primary" type="submit" value="添加" />
-            <input
-              className="btn-xs btn-primary"
-              type="button"
-              value="取消"
-              onClick={onToggleFormVisibility}
-            />
-          </div>
-        </form>
-      )}
-
-      {filteredBills.map((bill) => (
+      {/* 表单数据 */}
+      {bills.map((bill) => (
         <BillRow key={bill.id} bill={bill} />
       ))}
     </div>

@@ -1,4 +1,4 @@
-import { Bill, Summary, BillType } from "../utils/types";
+import { Bill, Summary, BillType } from "../types";
 import { useState, useEffect } from "react";
 
 const initialSummary = {
@@ -7,8 +7,7 @@ const initialSummary = {
   byCategories: new Map<string, number>(),
 };
 
-export const useSummary = (props: { bills: Bill[] }) => {
-  const { bills } = props;
+export default function useSummary(bills: Bill[]) {
   const [summary, setSummary] = useState<Summary>(initialSummary);
 
   useEffect(() => {
@@ -40,4 +39,4 @@ export const useSummary = (props: { bills: Bill[] }) => {
   }, [bills]);
 
   return summary;
-};
+}

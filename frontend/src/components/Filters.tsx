@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import DatePicker from "./DatePicker";
+import Select, { SelectOption } from "./Select";
 import {
   changeFilterTime,
   changeFilterCategory,
   changeFilterType,
 } from "../actions";
-import Select, { SelectOption } from "./Select";
-import { Filter } from "../utils/types";
+import { Filter, billTypeOptions } from "../types";
+import { DispatchContext } from "./App";
 
 interface Props {
   filter: Filter;
-  dispatch: Function;
-  billCategoryOptions: SelectOption[];
-  billTypeOptions: SelectOption[];
+  billCategoryOptions: SelectOption<string>[];
 }
 
 export default function Filters(props: Props) {
-  const { filter, dispatch, billCategoryOptions, billTypeOptions } = props;
+  const { filter, billCategoryOptions } = props;
+  const dispatch = useContext(DispatchContext);
 
   return (
     <div className="filters">

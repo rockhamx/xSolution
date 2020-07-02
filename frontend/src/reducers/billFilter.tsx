@@ -1,4 +1,4 @@
-import { Filter, Action } from "../utils/types";
+import { Filter, Action } from "../types";
 import { ChangeFilter } from "../actions";
 
 export default function billFilter(state: Filter, action: Action): Filter {
