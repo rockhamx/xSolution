@@ -21,8 +21,8 @@ export default function useSummary(bills: Bill[]) {
         // 分类统计
         let sumByCat = sum.byCategories.get(bill.category);
         if (bill.type === BillType.Earn)
-          sumByCat = sumByCat ? sumByCat + bill.amount : bill.amount;
-        else sumByCat = sumByCat ? sumByCat - bill.amount : -bill.amount;
+          sumByCat = sumByCat ? sumByCat + billAmount : billAmount;
+        else sumByCat = sumByCat ? sumByCat - billAmount : -billAmount;
 
         sum.byCategories.set(bill.category, sumByCat);
         return sum;
